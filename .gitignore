@@ -1,0 +1,22 @@
+# Python cache
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Environment files (important for security)
+.env
+*.env
+
+# VS Code settings (if you're using VS Code)
+.vscode/
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Logs or local temp files
+*.log
+
+# Virtual environment (if created locally)
+venv/
