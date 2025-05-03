@@ -10,6 +10,10 @@ bot_token = Config.BOT_TOKEN
 # Temporary dictionary to store replies
 user_replies = {}
 
+@Client.on_message(filters.command("start"))
+def start(client, message):
+    message.reply("Hello! I am your bot. How can I assist you?")
+
 # /addreply command to add custom replies for keywords
 @Client.on_message(filters.command("addreply") & filters.private)
 async def add_reply(client, message: Message):
