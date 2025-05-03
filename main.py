@@ -1,6 +1,7 @@
 from pyrogram import Client, filters
 from pyrogram.types import Message
 from config import Config
+from pyrogram import idle
 
 api_id = Config.API_ID
 api_hash = Config.API_HASH
@@ -52,3 +53,7 @@ async def auto_reply(client, message: Message):
         if keyword in user_message:
             await message.reply(reply)
             return
+
+# After client.start() or app.start()
+print("Bot started...")
+idle()  # Keeps bot running
