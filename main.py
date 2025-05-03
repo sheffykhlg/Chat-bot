@@ -1,5 +1,10 @@
 from pyrogram import Client, filters
 from pyrogram.types import Message
+from config import Config
+
+api_id = Config.API_ID
+api_hash = Config.API_HASH
+bot_token = Config.BOT_TOKEN
 
 # Temporary dictionary to store replies
 user_replies = {}
