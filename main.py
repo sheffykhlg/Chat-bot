@@ -1,25 +1,28 @@
-from pyrogram import Client, filters
+from pyrogram import Client, filters, idle
 from pyrogram.types import Message
 from config import Config
-from pyrogram import idle
 
+# Config file se credentials le rahe hain
 api_id = Config.API_ID
 api_hash = Config.API_HASH
 bot_token = Config.BOT_TOKEN
 
-# Temporary dictionary to store replies
+# Pyrogram Client create kar rahe hain
+app = Client("my_bot", api_id=api_id, api_hash=api_hash, bot_token=bot_token)
+
+# Yahan hum replies temporarily save kar rahe hain
 user_replies = {}
 
-@Client.on_message(filters.command("start"))
+# Start command pe simple reply karega
+@app.on_message(filters.command("start"))
 def start(client, message):
     message.reply("Hello! I am your bot. How can I assist you?")
 
-# /addreply command to add custom replies for keywords
-@Client.on_message(filters.command("addreply") & filters.private)
+# Command: /addreply keyword | reply
+@app.on_message(filters.command("addreply") & filters.private)
 async def add_reply(client, message: Message):
     if len(message.command) < 2:
         return await message.reply_text("❗ Usage: `/addreply keyword | your reply here`", quote=True)
-
     try:
         keyword, reply = message.text.split(" | ", 1)
         user_replies[keyword.lower()] = reply
@@ -27,8 +30,8 @@ async def add_reply(client, message: Message):
     except ValueError:
         await message.reply_text("❗ Please use the correct format: `/addreply keyword | your reply`", quote=True)
 
-# /delreply command to delete replies for a keyword
-@Client.on_message(filters.command("delreply") & filters.private)
+# Command: /delreply keyword
+@app.on_message(filters.command("delreply") & filters.private)
 async def del_reply(client, message: Message):
     if len(message.command) < 2:
         return await message.reply_text("❗ Usage: `/delreply keyword`", quote=True)
@@ -40,8 +43,8 @@ async def del_reply(client, message: Message):
     else:
         await message.reply_text(f"⚠️ No reply set for the keyword '{keyword}'", quote=True)
 
-# /listreplies command to list all saved replies
-@Client.on_message(filters.command("listreplies") & filters.private)
+# Command: /listreplies
+@app.on_message(filters.command("listreplies") & filters.private)
 async def list_replies(client, message: Message):
     if user_replies:
         replies = "\n".join([f"🔑 {key} → {value}" for key, value in user_replies.items()])
@@ -49,8 +52,8 @@ async def list_replies(client, message: Message):
     else:
         await message.reply_text("❗ No replies set yet. Use /addreply to set some.", quote=True)
 
-# Auto-reply based on keyword
-@Client.on_message(filters.private)
+# Auto reply jab bhi koi message aaye jisme keyword ho
+@app.on_message(filters.private)
 async def auto_reply(client, message: Message):
     user_message = message.text.lower()
     for keyword, reply in user_replies.items():
@@ -58,6 +61,6 @@ async def auto_reply(client, message: Message):
             await message.reply(reply)
             return
 
-# After client.start() or app.start()
+# Bot start karte hain
 print("Bot started...")
-idle()  # Keeps bot running
+app.run()
